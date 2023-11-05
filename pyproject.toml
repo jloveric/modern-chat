@@ -9,11 +9,12 @@ packages = [{include = "modern_chat"}]
 
 [tool.poetry.dependencies]
 python = "3.10"
-torch = "^2.1.0"
+torch = "2.0.0"
 chainlit = "^0.7.301"
 ctransformers = {extras = ["cuda"], version = "^0.2.27"}
 langchain = "^0.0.320"
 llama-cpp-python = "^0.2.13"
+transformers = "^4.35.0"
 
 
 [build-system]

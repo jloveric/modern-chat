@@ -2,6 +2,7 @@ from langchain import PromptTemplate, OpenAI, LLMChain
 from langchain.prompts.chat import ChatPromptTemplate
 import chainlit as cl
 from langchain.llms import CTransformers
+from langchain.memory import ConversationTokenBufferMemory
 
 template = """Question: {question}"""
 
@@ -30,7 +31,7 @@ def load_llm(model_name):
     llm = CTransformers(
         model=models.get(model_name)["path"],
         model_type="llama",
-        max_new_tokens=512,
+        max_new_tokens=4000,
         temperature=0.5,
         gpu_layers=100,
     )
@@ -45,10 +46,12 @@ def main():
     # Instantiate the chain for that user session
     prompt = ChatPromptTemplate.from_messages(models.get(model_name)["message"])
     print("prompt", prompt)
-    llm_chain = LLMChain(prompt=prompt, llm=llm, verbose=True)
+    memory = ConversationTokenBufferMemory(llm=llm, max_token_limit=2000)
+    llm_chain = LLMChain(prompt=prompt, llm=llm, verbose=True, memory=memory)
 
     # Store the chain in the user session
     cl.user_session.set("llm_chain", llm_chain)
+    cl.user_session.set("memory", memory)
 
 
 @cl.on_message
